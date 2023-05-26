@@ -11,6 +11,19 @@ print('Pandas:', pd.__version__)
 [object].lower()
 [object].upper()
 
-#Pyspark
-#check data types
+
+#Local variables used for saving
+project_name = "project_name"
+folder_location = 's3://[folder]/[project_name]/'
+file_path = folder_location + project_name +"_"+ curr_date
+schema_name="blau8"
+schema_table = schema_name +"."+ project_name+"_"+curr_date
+
+
+
+######Pyspark
+#check data types of data frame
 df.dtypes
+
+#check type of object
+type(df)
