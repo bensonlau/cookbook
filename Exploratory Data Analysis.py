@@ -13,7 +13,7 @@ pd.DataFrame(df.dtypes, columns = ['Column Name','Data type'])
 #FIlter singular column
 df.filter(df.state == "OH").show(truncate=False)
 
-# Filter multiple condition
+# Filter multiple conditi don
 df.filter( (df.state  == "OH") & (df.gender  == "M") ) \
     .show(truncate=False) 
 
@@ -46,8 +46,6 @@ def percent_missing(pandasDf):
             if sumMissing[idx] > 0:
                 print('{0}: {1:.2f}%'.format(col, pctMissing[idx] * 100))
         
-
-##### Pandas #####
 df.head()
 df["column_name"].mean()
 df["column_name"].median()
