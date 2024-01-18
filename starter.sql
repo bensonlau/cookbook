@@ -26,6 +26,9 @@ WHERE CHAR_LENGTH(content) > 15
 /*Calculating Ratio or Weighted Metrics
 ---MYSQL
 ---Usecase: Deriving relative frequency of an action
+
+--Reference:
+1. https://www.w3schools.com/sql/func_mysql_ifnull.asp
 */
 
 select 
@@ -35,6 +38,15 @@ from Signups as s
 left join Confirmations as c 
 	on s.user_id= c.user_id
 group by user_id;
+
+select 
+	s.user_id, 
+	ifnull(round(sum(c.action='confirmed')/count(*), 2), 0) as confirmation_rate 
+from Signups as s 
+left join Confirmations as c 
+	on s.user_id = c.user_id 
+group by s.user_id
+
 
 /*Calculating Volume Metrics Conditionally
 --MYSQL

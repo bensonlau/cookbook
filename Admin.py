@@ -27,3 +27,8 @@ df.dtypes
 
 #check type of object
 type(df)
+
+
+######Pandas
+pd.set_option('display.max_columns', None)
+pd.options.display.max_rows=1000

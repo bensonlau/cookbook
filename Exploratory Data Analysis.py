@@ -26,22 +26,14 @@ def spark_shape(sparkDf):
 print("spark_shape(sparkDf) loaded")
 print("Using count()  to get the number of rows on DataFrame and len(df.columns()) to get the number of columns.")
 
+# Counting distinct values from a column
+df.select('column name').distinct().collect()
+
+
 ##### Pandas #####
 import pandas
 
 # Printing the percentage of missing values per column
-def percent_missing(df:pd.DataFrame)->str:
-    '''
-    Derives the percentage of missing values for each column in a dataframe
-import pandas as pd
-
-    Args:
-        df
-    '''
-    # Summing the number of missing values per column and then dividing by the total rows
-    sumMissing = df.isnull().values.sum(axis=0)
-    pctMissing = sumMissing / df.shape[0]
-def percent_missing(df:pd.DataFrame) -> pd.DataFrame:
 def percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
   '''
   Derives the percentage of missing values for each column in a dataframe
@@ -62,8 +54,6 @@ def percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
   for idx, col in enumerate(df.columns):
     col_names_list.append(col)
     pct_missing_list.append(pct_missing[idx])
-    print ('{0}: {1:.2f}%'.format(col, pctMissing[idx] * 100))
-
     if verbose == True:
       print ('{0}: {1:.2f}%'.format(col, pctMissing[idx] * 100))
     else:
