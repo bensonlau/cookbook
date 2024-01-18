@@ -61,16 +61,31 @@ def percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
   # Create dataframe
   df_results = pd.DataFrame({'Columns': col_names_list, "Percent Missing": pct_missing_list})
   return df_results
+
+# Counting the length of column
+df['[column_name]']str.len()
+
+def invalid_tweets(tweets: pd.DataFrame) -> pd.DataFrame:
+    min = 15
+    is_valid = tweets['content'].str.len() > min
+    df = tweets[is_valid]
+    return df[['tweet_id']]
+
+def invalid_tweets(tweets: pd.DataFrame) -> pd.DataFrame:
+    # Filter rows where the length of 'content' is strictly greater than 15
+    invalid_tweets_df = tweets[tweets['content'].str.len() > 15]
     
-    if sumMissing.sum() == 0:
-        print('No missing values')
-    else:
-        # Looping through and printing out each columns missing value percentage
-        print('Percent Missing Values:', '\n')
-        for idx, col in enumerate(dataframe.columns):
-        for idx, col in enumerate(df.columns):
-            if sumMissing[idx] > 0:
-                print('{0}: {1:.2f}%'.format(col, pctMissing[idx] * 100))
+    # Select only the 'tweet_id' column from the invalid tweets DataFrame
+    result_df = invalid_tweets_df[['tweet_id']]
+    
+    return result_df
+
+#Counting the number of rows & columns of a dataframe
+# computing number of rows
+rows = len(df.axes[0])
+ 
+# computing number of columns
+cols = len(df.axes[1])
 
 print("Number of Rows: ", rows)
 print("Number of Columns: ", cols)
@@ -79,7 +94,60 @@ print("Number of Columns: ", cols)
 df.head()
 df["column_name"].mean()
 df["column_name"].median()
-df["column_name"].describe()        .reset_index()
+df["column_name"].describe()
+
+#Grouping
+
+# counting unique values
+n = len(pd.unique(df['height']))
+print("No.of.unique values :", n)
+
+#Filtering
+rslt_df = dataframe[dataframe['column_name'] > 70])
+
+#Counting columns conditionally
+def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
+    '''
+    Calculate monthly transactions summary.
+
+    Args:
+        transactions (pd.DataFrame): Input DataFrame containing transaction data.
+
+    Returns:
+        pd.DataFrame: Monthly transactions summary.
+
+    Notes:
+        - Adds 'approved_count' and 'approved_amount' columns based on 'state'.
+        - Converts 'trans_date' to month format.
+        - Groups by 'trans_date' and 'country', aggregating transaction metrics.
+        - Renames columns for clarity.
+
+    Example:
+        monthly_summary = monthly_transactions(transactions_df)
+    '''
+    # Add columns based on 'state' using assign for clarity
+    transactions = transactions.assign(
+        approved_count=np.where(transactions["state"] == "approved", 1, 0),
+        approved_amount=np.where(
+            transactions["state"] == "approved", transactions["amount"], 0
+        ),
+    )
+
+    # Convert 'trans_date' to month format
+    transactions["trans_date"] = transactions["trans_date"].dt.strftime("%Y-%m")
+
+    # Group by 'trans_date' and 'country', aggregate transaction metrics
+    monthly_summary = (
+        transactions.groupby(["trans_date", "country"], sort=False, dropna=False)
+        .agg(
+            {
+                "state": "count",
+                "approved_count": "sum",
+                "amount": "sum",
+                "approved_amount": "sum",
+            }
+        )
+        .reset_index()
     )
 
     # Rename columns for clarity
