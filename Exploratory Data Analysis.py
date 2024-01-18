@@ -33,6 +33,7 @@ import pandas
 def percent_missing(df:pd.DataFrame)->str:
     '''
     Derives the percentage of missing values for each column in a dataframe
+import pandas as pd
 
     Args:
         df
@@ -41,6 +42,7 @@ def percent_missing(df:pd.DataFrame)->str:
     sumMissing = df.isnull().values.sum(axis=0)
     pctMissing = sumMissing / df.shape[0]
 def percent_missing(df:pd.DataFrame) -> pd.DataFrame:
+def percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
   '''
   Derives the percentage of missing values for each column in a dataframe
 
@@ -62,6 +64,10 @@ def percent_missing(df:pd.DataFrame) -> pd.DataFrame:
     pct_missing_list.append(pct_missing[idx])
     print ('{0}: {1:.2f}%'.format(col, pctMissing[idx] * 100))
 
+    if verbose == True:
+      print ('{0}: {1:.2f}%'.format(col, pctMissing[idx] * 100))
+    else:
+      continue
   # Create dataframe
   df_results = pd.DataFrame({'Columns': col_names_list, "Percent Missing": pct_missing_list})
   return df_results
