@@ -34,14 +34,15 @@ df.select('column name').distinct().collect()
 import pandas as pd
 # Check data type of all columns
 df.dtypes
+
 # Counting the length of column
 df['[column_name]']str.len()
 
 #Counting the number of rows & columns of a dataframe
-# computing number of rows
+#...number of rows
 rows = len(df.axes[0])
  
-# computing number of columns
+#...number of columns
 cols = len(df.axes[1])
 
 print("Number of Rows: ", rows)
