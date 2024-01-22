@@ -33,7 +33,7 @@ def percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
   df_results = pd.DataFrame({'Columns': col_names_list, "Percent Missing": pct_missing_list})
   return df_results
 
- # Counting columns conditionally
+# Counting columns conditionally
 def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
     import numpy as np
     '''
@@ -123,3 +123,28 @@ def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
         )
         .reset_index()
     )
+
+# Calculating Ratio or Weighted Metrics
+def confirmation_rate(signups: pd.DataFrame, confirmations: pd.DataFrame) -> pd.DataFrame:
+	'''
+    Calculate monthly ratio metrics
+
+    Args:
+        signups (pd.DataFrame): Input DataFrame containing transaction data.
+
+        confirmations: Input dataframe
+
+    Returns:
+        pd.DataFrame: Monthly transactions summary.
+
+    Example:
+        monthly_summary = monthly_transactions(transactions)
+    '''
+	return (
+	    pd.merge(signups[["user_id"]], confirmations[["action", "user_id"]], on="user_id", how="left")
+	    .assign(confirmation_rate=lambda frame: frame.action.apply(lambda action: action == "confirmed"))
+	    .groupby("user_id", as_index=False)
+	    .confirmation_rate
+	    .mean()
+	    .round(2)
+	)

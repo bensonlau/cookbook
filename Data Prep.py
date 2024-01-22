@@ -39,6 +39,7 @@ df3 = df1.join(df2, df1.colName ==  df2.colName,"inner")
 # Adding & Removing columns
 df.select("column_name")
 df.drop("column_name") 
+df.assign() #returns a new object with all original columns in addition to new ones
 
 #Sorting
 df.sort_values(by=['col1','col2'], ascending=False)
@@ -62,15 +63,6 @@ import pandas as pd
 #Converting from Pyspark to Pandas
 pandasDf = sparkDf.toPandas()
 
+
 #Merging
 df3 = df1.merge(df2, how='inner', on='a')
-
-def confirmation_rate(signups: pd.DataFrame, confirmations: pd.DataFrame) -> pd.DataFrame:
-    return (
-        pd.merge(signups[["user_id"]], confirmations[["action", "user_id"]], on="user_id", how="left")
-        .assign(confirmation_rate=lambda frame: frame.action.apply(lambda action: action == "confirmed"))
-        .groupby("user_id", as_index=False)
-        .confirmation_rate
-        .mean()
-        .round(2)
-    )
