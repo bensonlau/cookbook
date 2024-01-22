@@ -10,7 +10,7 @@ def percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
   Derives the percentage of missing values for each column in a dataframe
 
   Args:
-      df = pandas dataframe
+      df: pandas dataframe
 
   Returns
       pandas dataframe with column names and percentage of missing values in respective columns
@@ -91,6 +91,7 @@ def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
 
     return monthly_summary
 
+# Counting columns conditionally
 def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
 	 '''
     Calculate monthly transactions summary.
@@ -127,12 +128,13 @@ def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
 # Calculating Ratio or Weighted Metrics
 def confirmation_rate(signups: pd.DataFrame, confirmations: pd.DataFrame) -> pd.DataFrame:
 	'''
-    Calculate monthly ratio metrics
+    Calculate ratio metrics.
 
     Args:
-        signups (pd.DataFrame): Input DataFrame containing transaction data.
+        signups (pd.DataFrame): Input DataFrame containing transaction
+        confirmations (pd.DataFrame): Input DataFrame containing sign-ups
 
-        confirmations: Input dataframe
+        confirmations: Input dataframe containing the confirmations received
 
     Returns:
         pd.DataFrame: Monthly transactions summary.
@@ -148,3 +150,31 @@ def confirmation_rate(signups: pd.DataFrame, confirmations: pd.DataFrame) -> pd.
 	    .mean()
 	    .round(2)
 	)
+
+#######Pyspark Data Frames########
+from pyspark.sql import DataFrame
+def pyspark_df_shape(df: DataFrame):
+	'''
+	Derive the dimensions of a pyspark data frame.
+	
+	Args:
+		df: pyspark dataframe 
+	
+	Notes:
+	Using count() action to get the number of rows on DataFrame 
+	and len(df.columns()) to get the number of columns.
+	'''
+
+	# extracting number of distinct rows from the Dataframe
+	row = df.distinct().count()
+
+	# extracting total number of rows from the Dataframe
+	all_rows = df.count()
+
+	# extracting number of columns from the Dataframe
+	col = len(df.columns)
+
+	print(f'Dimensions of the Dataframe are: {(row,col)}')
+	print(f'Distinct Number of Rows are: {row}')
+	print(f'Total Number of Rows are: {all_rows}')
+	print(f'Number of Columns are: {col}')
