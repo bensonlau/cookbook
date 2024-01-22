@@ -66,3 +66,37 @@ select
 
 from Transactions T
 group by 1,2
+
+/*Calculating Ratio or Weighted Metric Conditionally Using Self-Joins
+--MYSQL
+--Usecase: Identifying percent of users with consecutive days of activity using their earliest day of activity
+
+--Reference:
+1. https://www.w3schools.com/sql/func_mysql_date_sub.asp
+*/
+
+with earliest_login_summary as (
+  select
+    player_id,
+    min(event_date) as first_login
+  from
+    Activity
+  group by
+    player_id
+)
+
+, consec_logins as (
+  select
+    a.player_id as player_id
+  from
+    earliest_login_summary e
+    inner join activity a 
+        on e.player_id = a.player_id
+            and e.first_login = DATE_SUB(a.event_date, interval 1 DAY)
+)
+
+select
+  round (
+    (select count(distinct c.player_id) from consec_logins c)
+    / (select count(e.player_id) from earliest_login_summary e)
+  , 2) as fraction;
