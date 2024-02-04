@@ -100,3 +100,31 @@ select
     (select count(distinct c.player_id) from consec_logins c)
     / (select count(e.player_id) from earliest_login_summary e)
   , 2) as fraction;
+
+/*Calculating Ratio/Percentages Using Subqueries*/
+--MYSQL
+--Find percentage of first orders that the requested delivery is on the same date as the order
+with sub as (
+    select
+        customer_id,
+        min(order_date) as first_order_date
+    from Delivery
+    group by customer_id
+)
+
+, customer_first_order_summary as (
+select
+sub.customer_id,
+case when D.customer_pref_delivery_date > sub.first_order_date then 0
+    when D.customer_pref_delivery_date <= sub.first_order_date then 1
+    end as immediate    
+from sub
+left join Delivery d
+    on sub.customer_id = D.customer_id
+        and sub.first_order_date = D.order_date
+)
+
+select
+round(100*sum(immediate) / count(distinct c.customer_id),2) as immediate_percentage
+from customer_first_order_summary c
+
