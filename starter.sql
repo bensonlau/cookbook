@@ -103,7 +103,7 @@ select
 
 /*Calculating Ratio/Percentages Using Subqueries*/
 --MYSQL
---Find percentage of first orders that the requested delivery is on the same date as the order
+--Usecase: Find percentage of first orders that the requested delivery is on the same date as the order
 with sub as (
     select
         customer_id,
@@ -128,3 +128,48 @@ select
 round(100*sum(immediate) / count(distinct c.customer_id),2) as immediate_percentage
 from customer_first_order_summary c
 
+/*Creating running calculation to identify points in data*/
+with cte as (
+  SELECT 
+    person_name,
+    weight,
+    turn,
+    SUM(weight) OVER (ORDER BY turn) AS running_total_weight 
+  FROM Queue
+)
+
+select
+  person_name 
+from cte
+where running_total_weight <= 1000
+order by turn desc
+limit 1
+
+/*Calculating top performers by categories*/
+--MYSQl
+--Usecase: 
+--Write a solution to find the employees who are high earners in each of the departments.
+--A high earner in a department is an employee who has a salary in the top three unique salaries for that department.
+--Reference(s):
+--1. https://www.sqlshack.com/overview-of-sql-rank-functions/
+with sub as (
+
+select
+  e.id,
+  e.name as Employee,
+  e.salary,
+  e.departmentId,
+  d.name as Department,
+  dense_rank() over (partition by e.departmentId order by e.salary desc) as ranking
+from Employee e
+left join Department d
+    on e.departmentId = d.id
+)
+
+select
+  sub.Department as Department,
+  sub.Employee as Employee,
+  sub.salary as Salary
+from sub
+where ranking in ('1','2','3')
+order by sub.salary asc
