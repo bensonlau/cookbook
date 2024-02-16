@@ -2,9 +2,44 @@
 ########################################################################
 
 #######Pandas Data Frames########
+# Counting Column Length
+def invalid_column_length(tweets: pd.DataFrame) -> pd.DataFrame:
+    min = 15
+    is_valid = tweets['content'].str.len() > min
+    df = tweets[is_valid]
+    return df[['tweet_id']]
+
+def invalid_column_length(tweets: pd.DataFrame) -> pd.DataFrame:
+    # Filter rows where the length of 'content' is strictly greater than 15
+    invalid_tweets_df = tweets[tweets['content'].str.len() > 15]
+    
+    # Select only the 'tweet_id' column from the invalid tweets DataFrame
+    result_df = invalid_tweets_df[['tweet_id']]
+    
+    return result_df
+
+# Filtering and Subselecting
 import pandas as pd
+def find_products(products: pd.DataFrame) -> pd.DataFrame:
+    filtered_df = products[(products.low_fats =='Y') & (products.recyclable =='Y')]
+    result = filtered_df[['product_id']] 
+    return result
+
+####Single Line Approach
+import pandas as pd
+def find_products(products: pd.DataFrame) -> pd.DataFrame:
+    return products[(products.low_fats =='Y') & (products.recyclable =='Y')][['product_id']] 
+
+####Including Null/NA values
+ def find_customer_referee(customer: pd.DataFrame) -> pd.DataFrame:
+    return customer[ (customer['referee_id']!=2) | customer['referee_id'].isna()][['name']]
+
+####...Sorting the Data Frame
+def not_boring_movies(cinema: pd.DataFrame) -> pd.DataFrame:
+    return cinema[(cinema.description != 'boring') & (cinema.id % 2 == 1) ].sort_values(by='rating',ascending = False)
 
 # Printing the percentage of missing values per column
+import pandas as pd
 def percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
   '''
   Derives the percentage of missing values for each column in a dataframe
@@ -34,8 +69,9 @@ def percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
   return df_results
 
 # Counting columns conditionally
+import pandas as pd
+import numpy as np
 def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
-    import numpy as np
     '''
     Calculate monthly transactions summary.
 
@@ -151,7 +187,39 @@ def confirmation_rate(signups: pd.DataFrame, confirmations: pd.DataFrame) -> pd.
 	    .round(2)
 	)
 
+# Calculating Ratio or Weighted Metric Conditionally Using Self-Joins
+import pandas as pd
+def gameplay_analysis(activity: pd.DataFrame) -> pd.DataFrame:
+	# For each player ('player_id'), derive earliest log-in date
+   first_login = activity.groupby('player_id')['event_date'].min().reset_index()
+
+   activity['day_before_event'] = activity['event_date'] - pd.to_timedelta(1, unit='D')
+
+   merged_df = activity.merge(first_login, on='player_id', suffixes=('_actual', '_first'))
+
+   consecutive_login = merged_df[merged_df['day_before_event'] == merged_df['event_date_first']]
+
+   fraction = round(consecutive_login['player_id'].nunique() / activity['player_id'].nunique(),2)
+
+	output_df = pd.DataFrame({'fraction': [fraction]})
+	return output_df
+
+# Calculating rank of columns
+import pandas as pd
+def top_three_salaries(employee: pd.DataFrame, department: pd.DataFrame) -> pd.DataFrame:
+    
+    Employee_Department = employee.merge(department, left_on='departmentId', right_on='id').rename(columns = {'name_y': 'Department'})
+
+    Employee_Department = Employee_Department[['Department', 'departmentId', 'salary']].drop_duplicates()
+    
+    top_salary = Employee_Department.groupby(['Department', 'departmentId']).salary.nlargest(3).reset_index()
+    
+    df = top_salary.merge(employee, on=['departmentId', 'salary'])
+    
+    return df[['Department', 'name', 'salary']].rename(columns = {'name': 'Employee', 'salary': 'Salary'})
+
 #######Pyspark Data Frames########
+# Deriving dataframe dimensions
 from pyspark.sql import DataFrame
 def pyspark_df_shape(df: DataFrame):
 	'''
@@ -161,8 +229,8 @@ def pyspark_df_shape(df: DataFrame):
 		df: pyspark dataframe 
 	
 	Notes:
-	Using count() action to get the number of rows on DataFrame 
-	and len(df.columns()) to get the number of columns.
+		Using count() action to get the number of rows on DataFrame 
+		and len(df.columns()) to get the number of columns.
 	'''
 
 	# extracting number of distinct rows from the Dataframe
@@ -178,3 +246,9 @@ def pyspark_df_shape(df: DataFrame):
 	print(f'Distinct Number of Rows are: {row}')
 	print(f'Total Number of Rows are: {all_rows}')
 	print(f'Number of Columns are: {col}')
+
+def spark_shape(sparkDf):
+  print(sparkDf.count(), len(sparkDf.columns))
+
+print("spark_shape(sparkDf) loaded")
+print("Using count()  to get the number of rows on DataFrame and len(df.columns()) to get the number of columns.")
