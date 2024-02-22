@@ -176,7 +176,8 @@ order by sub.salary asc
 
 /*Identifying consecutively sequenced rows
 --MYSQL
---Usecase: Identifying all numbers that appear at least three times consecutively.
+--Usecase: Identifying all numbers that appear at least three times 
+--consecutively.
 --1. https://www.geeksforgeeks.org/mysql-lead-and-lag-function/
 
 
@@ -201,7 +202,8 @@ where num=ld and num=lg;
 --Usecase: For every date that there is 7 days worth of data finding 
 out how much was paid in that 7-day window (i.e., current day + 6 days
 before). Should be rounded to two decimal places.
-
+--Reference(s):
+--1. https://stevestedman.com/2013/04/rows-and-range-preceding-and-following/
 */
 
 select 
@@ -213,8 +215,8 @@ from (
     sum(amount) OVER(order by visited_on RANGE BETWEEN INTERVAL 6 DAY
       PRECEDING AND CURRENT ROW) as amount, 
     MIN(visited_on) OVER() as 1st_date 
-    FROM Customer
-) t
-WHERE visited_on>= 1st_date+6;
+    from Customer
+    ) t
+where visited_on>= 1st_date+6;
 
 
