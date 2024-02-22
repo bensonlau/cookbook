@@ -23,6 +23,24 @@ from table
 where char_length(content) > 15
 
 
+/*Updating columns
+--MYSQL
+-- Usecase: fix the names so that only the first character is 
+uppercase and the rest are lowercase.
+
+--Reference:
+1. https://www.w3schools.com/sql/func_mysql_substr.asp
+*/
+
+select
+  u.user_id,
+  concat(upper(substr(u.name,1,1)),
+      lower(substr(u.name,2))) AS name 
+from Users u
+order by
+  u.user_id asc
+
+
 /*Calculating Ratio or Weighted Metrics
 ---MYSQL
 ---Usecase: Deriving relative frequency of an action
@@ -189,8 +207,8 @@ from
 (
 select 
   num,
-  lead(num, 1) OVER(order by id) AS ld,
-  lag(num, 1) OVER (Oorder by id) AS lg
+  lead(num, 1) over (order by id) AS ld,
+  lag(num, 1) over (order by id) AS lg
 from logs
 ) t
 
@@ -214,7 +232,7 @@ from (
     select distinct visited_on, 
     sum(amount) OVER(order by visited_on RANGE BETWEEN INTERVAL 6 DAY
       PRECEDING AND CURRENT ROW) as amount, 
-    MIN(visited_on) OVER() as 1st_date 
+    MIN(visited_on) over() as 1st_date 
     from Customer
     ) t
 where visited_on>= 1st_date+6;
