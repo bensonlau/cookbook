@@ -17,10 +17,10 @@ SQL Stuff
 */
 
 
-SELECT 
+select 
 	field_id
-FROM table
-WHERE CHAR_LENGTH(content) > 15
+from table
+where char_length(content) > 15
 
 
 /*Calculating Ratio or Weighted Metrics
@@ -173,3 +173,26 @@ select
 from sub
 where ranking in ('1','2','3')
 order by sub.salary asc
+
+/*Identifying consecutively sequenced rows
+--MYSQL
+--Usecase: Identifying all numbers that appear at least three times consecutively.
+--1. https://www.geeksforgeeks.org/mysql-lead-and-lag-function/
+
+
+*/
+
+select distinct num as ConsecutiveNums
+from
+
+(
+select 
+  num,
+  lead(num, 1) OVER(order by id) AS ld,
+  lag(num, 1) OVER (Oorder by id) AS lg
+from logs
+) t
+
+where num=ld and num=lg;
+
+
