@@ -196,3 +196,25 @@ from logs
 where num=ld and num=lg;
 
 
+/*Calculating multiple day moving averages
+--MYSQL
+--Usecase: For every date that there is 7 days worth of data finding 
+out how much was paid in that 7-day window (i.e., current day + 6 days
+before). Should be rounded to two decimal places.
+
+*/
+
+select 
+  visited_on,
+  amount, 
+  round(amount/7, 2) as average_amount
+from (
+    select distinct visited_on, 
+    sum(amount) OVER(order by visited_on RANGE BETWEEN INTERVAL 6 DAY
+      PRECEDING AND CURRENT ROW) as amount, 
+    MIN(visited_on) OVER() as 1st_date 
+    FROM Customer
+) t
+WHERE visited_on>= 1st_date+6;
+
+
