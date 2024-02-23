@@ -62,3 +62,9 @@ print("No.of.unique values :", n)
 
 #Filtering
 rslt_df = dataframe[dataframe['column_name'] > 70])
+
+#Pivoting
+pivoted_df = pd.pivot_table(df,
+  values='DIGITAL_UNITS',
+  index=["ZIP_CODE"],
+  columns=['FOP_GLOBAL'],aggfunc='sum').reset_index()
