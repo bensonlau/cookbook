@@ -63,6 +63,12 @@ import pandas as pd
 #Converting from Pyspark to Pandas
 pandasDf = sparkDf.toPandas()
 
+#Selecting columns
+pandasDf['column_name'] #returns a pandas series
+pandasDf[['column_name']] #returns a pandas dataframe
+
+##...and rows
+pandasDf[0:4] #select the first 4 observations
 
 #Merging
 df3 = df1.merge(df2, how='inner', on='a')
