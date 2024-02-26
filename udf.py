@@ -2,6 +2,40 @@
 ########################################################################
 
 #######Pandas Data Frames########
+import pandas as pd
+def get_df_remove_empty_col(df) -> pd.DataFrame:
+  #removing columns that are all 0's
+  d = df[[column for column in df if int(df[column].max()) != 0]]
+  for c in df.columns:
+    if c not in d.columns:
+        print(c, end=", ")
+  return d
+
+print("Loaded get_df_remove_empty_col(df) -> pd.DataFrame")
+
+
+import pandas as pd
+def get_df_remove_x_missing_values(df,perc_missing=0.3) -> pd.DataFrame:
+  df2 = df[[column for column in df if df[column].count() / len(df) >= perc_missing]]
+  print("List of dropped columns:", end=" ")
+  for c in df.columns:
+      if c not in df2.columns:
+          print(c, end=", ")
+  print('\n')
+  df = df2
+
+print("Loaded: get_df_remove_empty_col(df,perc_missing=0.3) -> pd.DataFrame")
+
+'''
+Tabulates columns by data types
+'''
+import pandas as pd
+def count_column_types(sparkDf):
+    return pd.DataFrame(sparkDf.dtypes).groupby(1, as_index=False)[0].agg({'count':'count', 'names': lambda x: " | ".join(set(x))}).rename(columns={1:"type"})
+  
+print("count_column_types(sparkDf) loaded")
+print("""Count number of columns per type""")
+
 # Counting Column Length
 def invalid_column_length(tweets: pd.DataFrame) -> pd.DataFrame:
     min = 15
@@ -17,6 +51,16 @@ def invalid_column_length(tweets: pd.DataFrame) -> pd.DataFrame:
     result_df = invalid_tweets_df[['tweet_id']]
     
     return result_df
+
+# Updating columns names
+import pandas as pd
+def fix_names(users: pd.DataFrame) -> pd.DataFrame:
+    users["name"] = users["name"].str[0].str.upper() + users["name"].str[1:].str.lower()
+    return users.sort_values("user_id")
+
+def fix_names(users: pd.DataFrame) -> pd.DataFrame:
+    users["name"] = users["name"].str.capitalize()
+    return users.sort_values("user_id")
 
 # Filtering and Subselecting
 import pandas as pd
@@ -40,7 +84,7 @@ def not_boring_movies(cinema: pd.DataFrame) -> pd.DataFrame:
 
 # Printing the percentage of missing values per column
 import pandas as pd
-def percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
+def get_percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
   '''
   Derives the percentage of missing values for each column in a dataframe
 
@@ -247,6 +291,7 @@ def pyspark_df_shape(df: DataFrame):
 	print(f'Total Number of Rows are: {all_rows}')
 	print(f'Number of Columns are: {col}')
 
+# Summarizing data frame dimensions
 def spark_shape(sparkDf):
   print(sparkDf.count(), len(sparkDf.columns))
 
