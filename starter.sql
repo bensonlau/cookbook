@@ -148,12 +148,12 @@ from customer_first_order_summary c
 
 /*Creating running calculation to identify points in data*/
 with cte as (
-  SELECT 
+  select 
     person_name,
     weight,
     turn,
-    SUM(weight) OVER (ORDER BY turn) AS running_total_weight 
-  FROM Queue
+    sum(weight) OVER (order by turn) AS running_total_weight 
+  from Queue
 )
 
 select
