@@ -26,11 +26,41 @@ def get_df_remove_x_missing_values(df,perc_missing=0.3) -> pd.DataFrame:
 
 print("Loaded: get_df_remove_empty_col(df,perc_missing=0.3) -> pd.DataFrame")
 
+# Printing the percentage of missing values per column
+import pandas as pd
+def get_percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
+  '''
+  Derives the percentage of missing values for each column in a dataframe
+
+  Args:
+      df: pandas dataframe
+
+  Returns
+      pandas dataframe with column names and percentage of missing values in respective columns
+  '''
+  col_names_list=[]
+  pct_missing_list=[]
+
+  # Summing the number of missing values per column and then dividing by the total rows
+  sum_missing = df.isnull().values.sum(axis=0)
+  pct_missing = sum_missing / df.shape[0]
+
+  for idx, col in enumerate(df.columns):
+    col_names_list.append(col)
+    pct_missing_list.append(pct_missing[idx])
+    if verbose == True:
+      print ('{0}: {1:.2f}%'.format(col, pctMissing[idx] * 100))
+    else:
+      continue
+  # Create dataframe
+  df_results = pd.DataFrame({'Columns': col_names_list, "Percent Missing": pct_missing_list})
+  return df_results
+
 '''
 Tabulates columns by data types
 '''
 import pandas as pd
-def count_column_types(sparkDf):
+def get_count_by_column_types(sparkDf):
     return pd.DataFrame(sparkDf.dtypes).groupby(1, as_index=False)[0].agg({'count':'count', 'names': lambda x: " | ".join(set(x))}).rename(columns={1:"type"})
   
 print("count_column_types(sparkDf) loaded")
@@ -81,36 +111,6 @@ def find_products(products: pd.DataFrame) -> pd.DataFrame:
 ####...Sorting the Data Frame
 def not_boring_movies(cinema: pd.DataFrame) -> pd.DataFrame:
     return cinema[(cinema.description != 'boring') & (cinema.id % 2 == 1) ].sort_values(by='rating',ascending = False)
-
-# Printing the percentage of missing values per column
-import pandas as pd
-def get_percent_missing(df:pd.DataFrame, verbose = False) -> pd.DataFrame:
-  '''
-  Derives the percentage of missing values for each column in a dataframe
-
-  Args:
-      df: pandas dataframe
-
-  Returns
-      pandas dataframe with column names and percentage of missing values in respective columns
-  '''
-  col_names_list=[]
-  pct_missing_list=[]
-
-  # Summing the number of missing values per column and then dividing by the total rows
-  sum_missing = df.isnull().values.sum(axis=0)
-  pct_missing = sum_missing / df.shape[0]
-
-  for idx, col in enumerate(df.columns):
-    col_names_list.append(col)
-    pct_missing_list.append(pct_missing[idx])
-    if verbose == True:
-      print ('{0}: {1:.2f}%'.format(col, pctMissing[idx] * 100))
-    else:
-      continue
-  # Create dataframe
-  df_results = pd.DataFrame({'Columns': col_names_list, "Percent Missing": pct_missing_list})
-  return df_results
 
 # Counting columns conditionally
 import pandas as pd
@@ -263,6 +263,31 @@ def top_three_salaries(employee: pd.DataFrame, department: pd.DataFrame) -> pd.D
     return df[['Department', 'name', 'salary']].rename(columns = {'name': 'Employee', 'salary': 'Salary'})
 
 #######Pyspark Data Frames########
+
+from pyspark.sql import DataFrame 
+def clean_column_names(df:DataFrame, case="lower") -> DataFrame:
+  """
+  Parquet files are opinionated about the characters that can be used in column names.
+  This replaces all bad characters in column names with underscores and applies `case` to the whole string
+
+  Args:
+    df: spark dataframe
+    case: case to apply, default, lower
+
+  Returns:
+    spark dataframe with new column names
+  """
+  import pyspark.sql.functions as F
+  import re
+
+  if case=="lower":
+    new_names = [re.sub('[\\W]+', '_', n).lower().rstrip('_') for n in df.columns]
+  else:
+    new_names = [re.sub('[\\W]+', '_', n).upper().rstrip('_') for n in df.columns]
+  return df.toDF(*new_names)
+
+print("Loaded: clean_column_names(df, case='lower') -> DataFrame")
+
 # Deriving dataframe dimensions
 from pyspark.sql import DataFrame
 def pyspark_df_shape(df: DataFrame):
@@ -292,8 +317,18 @@ def pyspark_df_shape(df: DataFrame):
 	print(f'Number of Columns are: {col}')
 
 # Summarizing data frame dimensions
-def spark_shape(sparkDf):
-  print(sparkDf.count(), len(sparkDf.columns))
+from pyspark.sql import DataFrame 
+def get_spark_df_shape(df: DataFrame):
+  '''
+  Tidy View of the dimensions of a spark dataframe
 
-print("spark_shape(sparkDf) loaded")
-print("Using count()  to get the number of rows on DataFrame and len(df.columns()) to get the number of columns.")
+  Args:
+    df: spark dataframe
+
+  Returns:
+    Using count() action to get the number of rows on DataFrame and len(df.columns()) to get the number of columns.
+  '''
+  x = (df.count(), len(df.columns))
+  return x
+  
+print("Loaded: get_spark_df_shape(df)")
