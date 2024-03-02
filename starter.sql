@@ -7,7 +7,8 @@ SQL Stuff
 
 /*Counting Column Length
 -- MYSQL
--- Usecase: Identifying columns of certain length of entire column or of the string within column
+-- Usecase: Identifying columns of certain length of entire column or of the 
+--string within column
 1. LENGTH() returns the length of the string measured in bytes.
 2. CHAR_LENGTH() returns the length of the string measured in characters.
 
@@ -87,7 +88,8 @@ group by 1,2
 
 /*Calculating Ratio or Weighted Metric Conditionally Using Self-Joins
 --MYSQL
---Usecase: Identifying percent of users with consecutive days of activity using their earliest day of activity
+--Usecase: Identifying percent of users with consecutive days of activity using 
+--their earliest day of activity
 
 --Reference:
 1. https://www.w3schools.com/sql/func_mysql_date_sub.asp
@@ -121,7 +123,8 @@ select
 
 /*Calculating Ratio/Percentages Using Subqueries*/
 --MYSQL
---Usecase: Find percentage of first orders that the requested delivery is on the same date as the order
+--Usecase: Find percentage of first orders that the requested delivery 
+--is on the same date as the order
 with sub as (
     select
         customer_id,
@@ -143,7 +146,8 @@ left join Delivery d
 )
 
 select
-round(100*sum(immediate) / count(distinct c.customer_id),2) as immediate_percentage
+round(100*sum(immediate) 
+  / count(distinct c.customer_id),2) as immediate_percentage
 from customer_first_order_summary c
 
 /*Creating running calculation to identify points in data*/
@@ -178,7 +182,8 @@ select
   e.salary,
   e.departmentId,
   d.name as Department,
-  dense_rank() over (partition by e.departmentId order by e.salary desc) as ranking
+  dense_rank() over 
+    (partition by e.departmentId order by e.salary desc) as ranking
 from Employee e
 left join Department d
     on e.departmentId = d.id
@@ -237,4 +242,24 @@ from (
     ) t
 where visited_on>= 1st_date+6;
 
-
+/*Identifying earliest entry
+--MYSQL
+--Usecase: Write a solution to select the product id, year, quantity, and price 
+--for the first year of every product sold.
+--Reference(s):
+--1. https://dev.mysql.com/doc/refman/8.0/en/correlated-subqueries.html
+*/
+select 
+    product_id, 
+    year as first_year, 
+    quantity, 
+    price 
+from Sales 
+where 
+(product_id, year) in (
+    select 
+        product_id, 
+        min(year) AS year 
+    from Sales 
+    group by product_id
+    );
