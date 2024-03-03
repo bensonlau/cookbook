@@ -265,7 +265,7 @@ def top_three_salaries(employee: pd.DataFrame, department: pd.DataFrame) -> pd.D
 #######Pyspark Data Frames########
 
 from pyspark.sql import DataFrame 
-def clean_column_names(df:DataFrame, case="lower") -> DataFrame:
+def clean_column_names(df: DataFrame, case="lower") -> DataFrame:
   """
   Parquet files are opinionated about the characters that can be used in column names.
   This replaces all bad characters in column names with underscores and applies `case` to the whole string
@@ -290,7 +290,7 @@ print("Loaded: clean_column_names(df, case='lower') -> DataFrame")
 
 # Deriving dataframe dimensions
 from pyspark.sql import DataFrame
-def pyspark_df_shape(df: DataFrame):
+def get_spark_df_shape(df: DataFrame):
 	'''
 	Derive the dimensions of a pyspark data frame.
 	
@@ -316,6 +316,8 @@ def pyspark_df_shape(df: DataFrame):
 	print(f'Total Number of Rows are: {all_rows}')
 	print(f'Number of Columns are: {col}')
 
+print("Loaded: get_spark_df_shape(df: DataFrame)")
+
 # Summarizing data frame dimensions
 from pyspark.sql import DataFrame 
 def get_spark_df_shape(df: DataFrame):
@@ -330,5 +332,22 @@ def get_spark_df_shape(df: DataFrame):
   '''
   x = (df.count(), len(df.columns))
   return x
-  
-print("Loaded: get_spark_df_shape(df)")
+
+print("Loaded: get_spark_df_shape(df: DataFrame)")
+
+# Summarizing columns by type
+import pandas as pd
+def get_count_by_column_types(df) -> pd.DataFrame:
+'''
+Summarize dataframe by grouping by data type
+
+Args:
+    df: spark dataframe
+
+Returns:
+    Pandas dataframe that tabulates columns by data types
+'''
+    x = pd.DataFrame(df.dtypes).groupby(1, as_index=False)[0].agg({'count':'count', 'names': lambda x: " | ".join(set(x))}).rename(columns={1:"type"})
+
+    return x
+print("Loaded: get_count_by_column_types(df)")
