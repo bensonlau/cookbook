@@ -63,6 +63,9 @@ import pandas as pd
 #Converting from Pyspark to Pandas
 pandasDf = sparkDf.toPandas()
 
+#Copying dataset
+newDf = pandasDf.copy()
+
 #Selecting columns
 pandasDf['column_name'] #returns a pandas series
 pandasDf[['column_name']] #returns a pandas dataframe

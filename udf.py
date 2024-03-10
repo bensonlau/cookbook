@@ -262,6 +262,32 @@ def top_three_salaries(employee: pd.DataFrame, department: pd.DataFrame) -> pd.D
     
     return df[['Department', 'name', 'salary']].rename(columns = {'name': 'Employee', 'salary': 'Salary'})
 
+# Defining functions for outliers
+import pandas as pd
+def outlier_thresholds(df: pd.DataFrame, variable: str):
+    quartile1 = dataframe[variable].quantile(0.01)
+    quartile3 = dataframe[variable].quantile(0.99)
+    interquantile_range = quartile3 - quartile1
+    up_limit = quartile3 + 1.5 * interquantile_range
+    low_limit = quartile1 - 1.5 * interquantile_range
+    return low_limit, up_limit
+
+# Defining functions to replace outliers
+import pandas as pd
+def replace_with_thresholds(df: pd.DataFrame, variable:str):
+'''
+Args:
+    df: pandas dataframe
+    variable: name of column in dataframe
+
+Notes:
+    replace_with_thresholds(df, "Price")
+
+'''
+    low_limit, up_limit = outlier_thresholds(dataframe, variable)
+    dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
+    dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
+
 #######Pyspark Data Frames########
 
 from pyspark.sql import DataFrame 
