@@ -1,19 +1,26 @@
 ####A/B Testing Cookbook
-import numpy as np
-from scipy.stats import stats, shapiro
 
-####Testing for Normality####
+def power_analysis (effect_size:float = -0.10, alpha:float = 0.05, power=0.9):
+	# import required modules 
+	from statsmodels.stats.power import TTestIndPower 
 
-x = np.array([148, 154, 158, 160, 161, 162, 166, 170, 182, 195, 236])
-#res = stats.shapiro(x)
-#print(res.statistic)
+	# Define effect size, significance level (alpha), and desired power
+	# effect_size: difference between means
+	# alpha: Significance level (commonly 0.05)
+	# power:  Desired power (commonly 0.8)
 
-test_stat, pvalue = shapiro(x)
-print('Test Stat = %.4f, p-value = %.4f' % (test_stat, pvalue))
+	# Create an instance of TTestIndPower
+	analysis = TTestIndPower()
+
+	# Calculate the required sample size
+	sample_size = analysis.solve_power(effect_size, power=power, nobs1=None, ratio=1.0, alpha=alpha)
+	print(f"Required sample size: {sample_size:.2f}")
+
 
 # A/B Testing Function - Quick Solution
 def AB_Test(dataframe, group, target):
-    
+ '''Originally sourced from https://www.kaggle.com/code/yufengsui/datacamp-project-mobile-games-a-b-testing/input
+ '''
     # Packages
     from scipy.stats import shapiro
     import scipy.stats as stats
