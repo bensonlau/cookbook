@@ -170,8 +170,9 @@ limit 1
 /*Calculating top performers by categories*/
 --MYSQl
 --Usecase: 
---Write a solution to find the employees who are high earners in each of the departments.
---A high earner in a department is an employee who has a salary in the top three unique salaries for that department.
+--Write a solution to find the employees who are high earners in each of the 
+--departments. A high earner in a department is an employee who has a salary in
+-- the top three unique salaries for that department.
 --Reference(s):
 --1. https://www.sqlshack.com/overview-of-sql-rank-functions/
 with sub as (
@@ -263,3 +264,30 @@ where
     from Sales 
     group by product_id
     );
+
+/*Identifying records from dataset as it relates to another dataset
+--Usecase: Find the IDs of the users who visited without making any 
+transactions and the number of times they made these types of visits.
+--Reference(s):
+*/
+
+--Approach #1: Removing Records Using NOT IN/EXISTS
+select 
+    customer_id,
+    count(transaction_id is null) as count_no_trans 
+from visits
+left join transactions 
+  on visits.visit_id = transactions.visit_id
+where transaction_id is null
+group by customer_id;
+
+--Approach #2: Removing Records left join and is null
+select
+    customer_id,
+    count(distinct visit_id) as count_no_trans
+from Visits v
+where v.visit_id not in (
+        select visit_id
+        from Transactions
+    )
+group by customer_id;
