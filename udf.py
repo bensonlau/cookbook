@@ -1,7 +1,7 @@
 #################################################################################For useful and/or commonly used user-defined functions#########
 ########################################################################
 
-#######Pandas Data Frames########
+####### Pandas Data Frames ########
 import pandas as pd
 def get_df_remove_empty_col(df) -> pd.DataFrame:
   #removing columns that are all 0's
@@ -10,9 +10,7 @@ def get_df_remove_empty_col(df) -> pd.DataFrame:
     if c not in d.columns:
         print(c, end=", ")
   return d
-
 print("Loaded get_df_remove_empty_col(df) -> pd.DataFrame")
-
 
 import pandas as pd
 def get_df_remove_x_missing_values(df,perc_missing=0.3) -> pd.DataFrame:
@@ -23,7 +21,6 @@ def get_df_remove_x_missing_values(df,perc_missing=0.3) -> pd.DataFrame:
           print(c, end=", ")
   print('\n')
   df = df2
-
 print("Loaded: get_df_remove_empty_col(df,perc_missing=0.3) -> pd.DataFrame")
 
 # Printing the percentage of missing values per column
@@ -99,7 +96,7 @@ def find_products(products: pd.DataFrame) -> pd.DataFrame:
     result = filtered_df[['product_id']] 
     return result
 
-####Single Line Approach
+#### Single Line Approach ####
 import pandas as pd
 def find_products(products: pd.DataFrame) -> pd.DataFrame:
     return products[(products.low_fats =='Y') & (products.recyclable =='Y')][['product_id']] 
@@ -236,17 +233,12 @@ import pandas as pd
 def gameplay_analysis(activity: pd.DataFrame) -> pd.DataFrame:
 	# For each player ('player_id'), derive earliest log-in date
    first_login = activity.groupby('player_id')['event_date'].min().reset_index()
-
    activity['day_before_event'] = activity['event_date'] - pd.to_timedelta(1, unit='D')
-
    merged_df = activity.merge(first_login, on='player_id', suffixes=('_actual', '_first'))
-
    consecutive_login = merged_df[merged_df['day_before_event'] == merged_df['event_date_first']]
-
    fraction = round(consecutive_login['player_id'].nunique() / activity['player_id'].nunique(),2)
-
-	output_df = pd.DataFrame({'fraction': [fraction]})
-	return output_df
+   output_df = pd.DataFrame({'fraction': [fraction]})
+    return output_df
 
 # Calculating rank of columns
 import pandas as pd
@@ -288,8 +280,22 @@ Notes:
     dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
     dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
 
-#######Pyspark Data Frames########
+# Removing records using ~ and isin()
+import pandas as pd
+def find_customers(visits: pd.DataFrame, transactions: pd.DataFrame) -> pd.DataFrame:
+   visits_no_trans = visits[~visits.visit_id.isin(transactions.visit_id)]
+   df = visits_no_trans.groupby('customer_id', as_index=False)['visit_id'].count()
+   return df.rename(columns={'visit_id': 'count_no_trans'})
 
+# Removing Records Using left merge and isna()
+import pandas as pd
+def find_customers(visits: pd.DataFrame, transactions: pd.DataFrame) -> pd.DataFrame:
+   visits_no_trans = visits.merge(transactions, on='visit_id', how='left')
+   visits_no_trans = visits_no_trans[visits_no_trans.transaction_id.isna()]
+   df = visits_no_trans.groupby('customer_id', as_index=False)['visit_id'].count()
+   return df.rename(columns={'visit_id': 'count_no_trans'})
+
+####### Pyspark Data Frames ########
 from pyspark.sql import DataFrame 
 def clean_column_names(df: DataFrame, case="lower") -> DataFrame:
   """
