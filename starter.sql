@@ -266,6 +266,7 @@ where
     );
 
 /*Identifying records from dataset as it relates to another dataset
+--MYSQL
 --Usecase: Find the IDs of the users who visited without making any 
 transactions and the number of times they made these types of visits.
 --Reference(s):
@@ -291,3 +292,41 @@ where v.visit_id not in (
         from Transactions
     )
 group by customer_id;
+
+
+/*Identifying records from dataset as it relates to another dataset
+--MYSQL
+--Usecase: Find all dates with higher temperature compared to previous
+dates
+*/
+
+--Approach #1: Self join option
+select
+    w1.id
+from Weather w1
+left join Weather w2
+    on DATEDIFF(w1.recordDate, w2.recordDate) = 1 #w1 the day before, w2 the current day
+where w2.temperature < w1.temperature
+
+
+--Approach #2: Using window function option
+WITH PreviousWeatherData AS
+(
+    SELECT 
+        id,
+        recordDate,
+        temperature, 
+        LAG(temperature, 1) OVER (ORDER BY recordDate) AS PreviousTemperature,
+        LAG(recordDate, 1) OVER (ORDER BY recordDate) AS PreviousRecordDate
+    FROM 
+        Weather
+)
+
+SELECT 
+    id 
+FROM 
+    PreviousWeatherData
+WHERE 
+    temperature > PreviousTemperature
+AND 
+    recordDate = DATE_ADD(PreviousRecordDate, INTERVAL 1 DAY);
