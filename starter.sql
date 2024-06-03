@@ -305,28 +305,28 @@ select
     w1.id
 from Weather w1
 left join Weather w2
-    on DATEDIFF(w1.recordDate, w2.recordDate) = 1 #w1 the day before, w2 the current day
+    on datdiff(w1.recordDate, w2.recordDate) = 1 #w1 the day before, w2 the current day
 where w2.temperature < w1.temperature
 
 
---Approach #2: Using window function option
-WITH PreviousWeatherData AS
+--Approach #2: Using window function option within a CTE
+with PreviousWeatherData AS
 (
-    SELECT 
-        id,
-        recordDate,
-        temperature, 
-        LAG(temperature, 1) OVER (ORDER BY recordDate) AS PreviousTemperature,
-        LAG(recordDate, 1) OVER (ORDER BY recordDate) AS PreviousRecordDate
-    FROM 
+    select 
+      id,
+      recordDate,
+      temperature, 
+      lag(temperature, 1) over (order by recordDate) AS PreviousTemperature,
+      lag(recordDate, 1) over (order by recordDate) AS PreviousRecordDate
+    from 
         Weather
 )
 
-SELECT 
+select 
     id 
-FROM 
+from 
     PreviousWeatherData
-WHERE 
-    temperature > PreviousTemperature
-AND 
-    recordDate = DATE_ADD(PreviousRecordDate, INTERVAL 1 DAY);
+where 
+  temperature > PreviousTemperature
+    and 
+  recordDate = date_add(PreviousRecordDate, interval 1 DAY);
