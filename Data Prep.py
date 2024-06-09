@@ -66,6 +66,11 @@ pandasDf = sparkDf.toPandas()
 #Copying dataset
 newDf = pandasDf.copy()
 
+#Loading data
+#...from csv
+df = pd.read_csv('[file_name.csv]')
+
+
 #Selecting columns
 pandasDf['column_name'] #returns a pandas series
 pandasDf[['column_name']] #returns a pandas dataframe

@@ -2,6 +2,23 @@
 ########################################################################
 
 ####### Pandas Data Frames ########
+# Creating dataframe
+import pandas as pd
+def createDataframe(student_data: List[List[int]]) -> pd.DataFrame:
+    column_names = ["student_id","age"]
+    result_df = pd.DataFrame(student_data, columns = column_names)
+    return result_df
+
+# Getting size of dataframe
+import pandas as pd
+def getDataframeSize(players: pd.DataFrame) -> List[int]:
+    #...number of rows
+    rows = players.shape[0]
+    #...number of columns
+    cols = players.shape[1]
+    return [rows,cols]
+    
+
 import pandas as pd
 def get_df_remove_empty_col(df) -> pd.DataFrame:
   #removing columns that are all 0's
