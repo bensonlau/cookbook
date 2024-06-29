@@ -11,7 +11,7 @@ def createDataframe(student_data: List[List[int]]) -> pd.DataFrame:
 
 # Getting size of dataframe
 import pandas as pd
-def getDataframeSize(players: pd.DataFrame) -> List[int]:
+def getDataframeSize(players: pd.DataFrame) -> List:
     #...number of rows
     rows = players.shape[0]
     #...number of columns
@@ -311,6 +311,41 @@ def find_customers(visits: pd.DataFrame, transactions: pd.DataFrame) -> pd.DataF
    visits_no_trans = visits_no_trans[visits_no_trans.transaction_id.isna()]
    df = visits_no_trans.groupby('customer_id', as_index=False)['visit_id'].count()
    return df.rename(columns={'visit_id': 'count_no_trans'})
+
+# Find specifically ranked row
+'''
+Selects a row entry by a specific ranking of a column
+
+Args:
+  df: dataframe is a dataframe with at least one row and columns to be ranked by
+  
+  column_ranked_by (str): column to be ranked by 
+  
+  n_rank (int): nth highest rank
+
+Returns
+  pd.Dataframe: dataframe is a dataframe with only a single row output
+'''
+import pandas as pd
+def n_highest_column(df: pd.DataFrame, column_ranked_by: str, n_rank: int) -> pd.DataFrame:
+    # 1. drop any duplicate salaries.
+    df = df.drop_duplicates([column_ranked_by])
+    
+    # 2. If there are less than two unique salaries, return `np.NaN`.
+    if len(df[column_ranked_by].unique()) < 2:
+        return pd.DataFrame({column_ranked_by: [np.NaN]})
+    
+    # 3. Sort the table by `salary` in descending order.
+    df = employee.sort_values(column_ranked_by, ascending=False)
+    
+    # 4. Drop the `id` column.
+    #employee.drop("id", axis=1, inplace=True)
+    
+    # 5. Rename the specified column.
+    df.rename({column_ranked_by: "n_highest_column"}, axis=1, inplace=True)
+    
+    # 6. Return the nth highest row.
+    return df.head(n_rank).tail(1)
 
 ####### Pyspark Data Frames ########
 from pyspark.sql import DataFrame 
