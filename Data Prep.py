@@ -5,6 +5,9 @@ from sklearn import datasets
 ##### Pyspark ######
 ####################
 
+#Viewing in databricks
+display(df)
+
 #Converting from Pandas
 # SparkSession
 from pyspark.sql import SparkSession
@@ -41,8 +44,6 @@ df.select("column_name")
 df.drop("column_name") 
 df.assign() #returns a new object with all original columns in addition to new ones
 
-#Sorting
-df.sort_values(by=['col1','col2'], ascending=False)
 
 #Renaming
 df = df.withColumnRenamed("existing","new")
@@ -80,3 +81,6 @@ pandasDf[0:4] #select the first 4 observations
 
 #Merging
 df3 = df1.merge(df2, how='inner', on='a')
+
+#Sorting
+df.sort_values(by=['col1','col2'], ascending=False)
