@@ -1,7 +1,6 @@
 ##### Pyspark #####
-
-#summary statistics of columns present in the data frame (df)
-#add .display() in databricks for friendlier visualization
+# Summary statistics of columns present in the data frame (df)
+# add .display() in databricks for friendlier visualization
 df.describe() 
 df.summary() #functions like describe() but provides values at 25th, 50th, 75th percentiles
 
@@ -11,12 +10,16 @@ df.printSchema()
 print('Columns overview')
 pd.DataFrame(df.dtypes, columns = ['Column Name','Data type'])
 
-#Filter singular column
+# Filter singular column
 df.filter(df.state == "OH").show(truncate=False)
 
-# Filter multiple conditi don
-df.filter( (df.state  == "OH") & (df.gender  == "M") ) \
+# Filter multiple conditions
+df.filter((df.state  == "OH") & (df.gender  == "M") ) \
     .show(truncate=False) 
+
+# Selecting columns
+from pyspark.sql.functions import col
+df.select(col("[column_name]"))
 
 # Counting distinct values from a column
 df.select('column name').distinct().collect()
@@ -25,6 +28,12 @@ df.select('column name').distinct().collect()
 import pandas as pd
 # Check data type of all columns
 df.dtypes
+
+# Checking null variables 
+df.isna().sum()
+
+# Summary Statistics
+df.describe([0.01,0.25,0.50,0.75,0.99]).T #.T Transposes the dataframe
 
 # Counting the length of column
 df['[column_name]']str.len()
@@ -61,7 +70,7 @@ n = len(pd.unique(df['height']))
 print("No.of.unique values :", n)
 
 #Filtering
-rslt_df = dataframe[dataframe['column_name'] > 70])
+rslt_df = dataframe[dataframe['column_name'] > 70]
 
 #Pivoting
 pivoted_df = pd.pivot_table(df,
