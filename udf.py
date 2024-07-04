@@ -3,8 +3,31 @@
 
 ####### Pandas Data Frames ########
 # Creating dataframe
+'''
+Creates a pandas data frame from scratch.  Useful for testing out sample code
+
+Args:
+  student_data (list): list of lists with student data
+  
+Returns
+  pd.DataFrame: dataframe
+
+Example:
+  data = [[3, 300], [2, 200], [1, 100]]
+  column_names = ["student_id","age"]
+  createDataFrame(data,column_names)
+'''
 import pandas as pd
-def createDataframe(student_data: List[List[int]]) -> pd.DataFrame:
+def createDataFrame(data: list, column_names: list) -> pd.DataFrame:
+  result_df = pd.DataFrame(data, columns = column_names)
+  return result_df
+
+#alternatively, just creating with pandas
+result_df = pd.DataFrame(data, columns = column_names)
+
+
+import pandas as pd
+def createDataframe(student_data:list) -> pd.DataFrame:
     column_names = ["student_id","age"]
     result_df = pd.DataFrame(student_data, columns = column_names)
     return result_df
