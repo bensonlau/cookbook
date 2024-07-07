@@ -7,10 +7,8 @@ print('Python:', sys.version)
 print('NumPy:', np.__version__)
 print('Pandas:', pd.__version__)
 
-
 [object].lower()
 [object].upper()
-
 
 #Local variables used for saving
 project_name = "project_name"
@@ -19,16 +17,19 @@ file_path = folder_location + project_name +"_"+ curr_date
 schema_name="blau8"
 schema_table = schema_name +"."+ project_name+"_"+curr_date
 
-
-
 ######Pyspark
-#check data types of data frame
-df.dtypes
-
 #check type of object
 type(df)
 
+#check data types of data frame
+df.dtypes
+
+print('Data overview')
+df.printSchema()
 
 ######Pandas
+print('Columns overview')
+pd.DataFrame(df.dtypes, columns = ['Column Name','Data type'])
+
 pd.set_option('display.max_columns', None)
 pd.options.display.max_rows=1000

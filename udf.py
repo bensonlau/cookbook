@@ -34,11 +34,11 @@ def createDataframe(student_data:list) -> pd.DataFrame:
 
 # Getting size of dataframe
 import pandas as pd
-def getDataframeSize(players: pd.DataFrame) -> List:
+def getDfSize(df: pd.DataFrame) -> list:
     #...number of rows
-    rows = players.shape[0]
+    rows = df.shape[0]
     #...number of columns
-    cols = players.shape[1]
+    cols = df.shape[1]
     return [rows,cols]
     
 

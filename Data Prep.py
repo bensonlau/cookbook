@@ -27,7 +27,6 @@ df = spark.sql(query)
 #...from csv
 df = spark.read.format('csv').option('header','true').load('[s3://desired_path]')
 
-
 #Saving Data
 #....to s3 location
 df.write.mode("overwrite").option("path", "s3://desired_path").saveAsTable("schema.tableName")
@@ -38,12 +37,10 @@ df.write.mode('overwrite').csv(file_path, header = 'true')
 ##Joining Data
 df3 = df1.join(df2, df1.colName ==  df2.colName,"inner")
 
-
 # Adding & Removing columns
 df.select("column_name")
 df.drop("column_name") 
 df.assign() #returns a new object with all original columns in addition to new ones
-
 
 #Renaming
 df = df.withColumnRenamed("existing","new")
@@ -70,11 +67,15 @@ newDf = pandasDf.copy()
 #Loading data
 #...from csv
 df = pd.read_csv('[file_name.csv]')
-
+#...from excel
+df = pd.read_excel('[file_name.xlsx]',sheet_name = '[sheet_name]]'
 
 #Selecting columns
-pandasDf['column_name'] #returns a pandas series
-pandasDf[['column_name']] #returns a pandas dataframe
+df['column_name'] #returns a pandas series
+df[['column_name']] #returns a pandas dataframe
+
+#Renaming columns
+df.rename(columns={"[column name]"})
 
 ##...and rows
 pandasDf[0:4] #select the first 4 observations
