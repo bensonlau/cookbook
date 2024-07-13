@@ -72,6 +72,10 @@ print("No.of.unique values :", n)
 #Filtering
 rslt_df = dataframe[dataframe['column_name'] > 70]
 
+#Filtering & Selecting
+df.loc[df['[column_name]'] == int ,['[column_name2]','[column_name3]']]
+
+
 #Pivoting
 pivoted_df = pd.pivot_table(df,
   values='DIGITAL_UNITS',
