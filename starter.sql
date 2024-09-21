@@ -26,7 +26,7 @@ where char_length(content) > 15
 
 /*Updating columns
 --MYSQL
--- Usecase: fix the names so that only the first character is 
+--Usecase: fix the names so that only the first character is 
 uppercase and the rest are lowercase.
 
 --Reference:
@@ -41,6 +41,33 @@ from Users u
 order by
   u.user_id asc
 
+/*Summarizing a dataset*/
+--MYSQL
+--Usecase: find all the classes with at least x number of students
+--Approach #1: Using Group By and the Having condition
+
+select
+    class
+from Courses
+group by class
+having count(distinct student) >= 5
+
+--Approach #2: Using nested subquery
+--CTE can also be used for readability, reusability
+
+--References:
+--https://learnsql.com/blog/cte-vs-subquery/
+
+select
+    class
+from
+    (select
+        class, count(student) AS num
+    FROM
+        courses
+    group by class) AS temp
+where
+    num >= 5
 
 /*Calculating Ratio or Weighted Metrics
 ---MYSQL
