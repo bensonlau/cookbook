@@ -347,6 +347,20 @@ def n_highest_column(df: pd.DataFrame, column_ranked_by: str, n_rank: int) -> pd
     # 6. Return the nth highest row.
     return df.head(n_rank).tail(1)
 
+import pandas as pd
+def highest_grade(enrollments: pd.DataFrame) -> pd.DataFrame:
+    sorted_df = enrollments.sort_values(
+        by=["student_id", "grade", "course_id"], ascending=[True, False, True]
+    )
+    result = sorted_df.groupby("student_id").head(1).reset_index(drop=True)
+    return result
+
+import pandas as pd
+def find_classes(courses: pd.DataFrame) -> pd.DataFrame:
+    df = courses.groupby('class').size().reset_index(name='count')
+    df = df[df['count'] >= 5]
+    return df
+
 ####### Pyspark Data Frames ########
 from pyspark.sql import DataFrame 
 def clean_column_names(df: DataFrame, case="lower") -> DataFrame:
