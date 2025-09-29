@@ -40,7 +40,10 @@ df3 = df1.join(df2, df1.colName ==  df2.colName,"inner")
 # Adding & Removing columns
 df.select("column_name")
 df.drop("column_name") 
-df.assign() #returns a new object with all original columns in addition to new ones
+df.assign() #returns a new object with all original columns in addition to new observations
+  #examples:
+  result = df.assign(total = df.groupby("gender")["score_points"].transform("cumsum"))
+
 
 #Renaming
 df = df.withColumnRenamed("existing","new")
@@ -75,13 +78,22 @@ df['column_name'] #returns a pandas series
 df[['column_name']] #returns a pandas dataframe
 
 #Renaming columns
-df.rename(columns={"[column name]"})
+df.rename(columns={'old_column_name': 'new_column_name'})
 
 ##...and rows
-pandasDf[0:4] #select the first 4 observations
+df[0:4] #select the first 4 observations
 
 #Merging
-df3 = df1.merge(df2, how='inner', on='a')
+df1.merge(df2, how='inner', on='shared_column_name')
 
 #Sorting
 df.sort_values(by=['col1','col2'], ascending=False)
+
+#Grouping
+df.groupby(['column_name']).reset_index(drop=True)
+
+#...Counting distinct
+df.groupby(['column_name']).agg('column_name:pd.Series.nunique).reset_index()
+
+#Average of columns
+df.groupby('column_name').agg(name_of_column = ('column','mean')).reset_index()
