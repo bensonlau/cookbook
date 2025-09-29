@@ -312,6 +312,12 @@ def find_customers(visits: pd.DataFrame, transactions: pd.DataFrame) -> pd.DataF
    df = visits_no_trans.groupby('customer_id', as_index=False)['visit_id'].count()
    return df.rename(columns={'visit_id': 'count_no_trans'})
 
+# Updating column values
+import pandas as pd
+def swap_salary(salary: pd.DataFrame) -> pd.DataFrame:
+    return salary.replace({'f':'m', 'm':'f'})
+
+
 # Find specifically ranked row
 '''
 Selects a row entry by a specific ranking of a column
@@ -360,6 +366,20 @@ def find_classes(courses: pd.DataFrame) -> pd.DataFrame:
     df = courses.groupby('class').size().reset_index(name='count')
     df = df[df['count'] >= 5]
     return df
+
+# Remove duplicate rows
+import pandas as pd 
+def delete_duplicate_emails(person: pd.DataFrame) -> pd.DataFrame:
+    # Find the minimum 'id' for each 'email' group
+    min_id = person.groupby('email')['id'].transform('min')
+    
+    # Identify rows where 'id' is not the minimum for their 'email' group
+    removed_person = person[person['id'] != min_id]
+    
+    # Drop the identified rows from the original DataFrame
+    person.drop(removed_person.index, inplace=True)
+
+    return removed_person
 
 ####### Pyspark Data Frames ########
 from pyspark.sql import DataFrame 
@@ -449,3 +469,19 @@ Returns:
 
     return x
 print("Loaded: get_count_by_column_types(df)")
+
+from pyspark.sql import DataFrame 
+def find_unique_columns(df: DataFrame) -> DataFrame:
+    columns = df.columns
+    unique_columns = []
+    total_count = df.count()
+    
+    for column in columns:
+        unique_count = df.select(column).distinct().count()
+        if unique_count == total_count:
+            unique_columns.append(column)
+    
+    return unique_columns
+
+unique_columns = find_unique_columns(df)
+display(unique_columns)
