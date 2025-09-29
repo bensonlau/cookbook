@@ -357,3 +357,43 @@ where
   temperature > PreviousTemperature
     and 
   recordDate = date_add(PreviousRecordDate, interval 1 DAY);
+
+/*Calculating difference between column values for two different rows*/
+--MYSQL
+--Usecase: 
+/*
+There is a factory website that has several machines each running the same number of processes.
+Write a solution to find the average time each machine takes to complete a process.
+
+The time to complete a process is the 'end' timestamp minus the 'start' timestamp. The average 
+time is calculated by the total time to complete every process on the machine divided by the 
+number of processes that were run.
+The resulting table should have the machine_id along with the average time as processing_time, 
+which should be rounded to 3 decimal places.
+*/
+
+--Approach #1: Self join and calculate from two columns from same row 
+select a.machine_id, 
+       round(avg(b.timestamp - a.timestamp), 3) as processing_time
+from activity a, 
+     activity b
+where 
+    a.machine_id = b.machine_id
+and 
+    a.process_id = b.process_id
+and 
+    a.activity_type = 'start'
+and 
+    b.activity_type = 'end'
+group by machine_id
+
+--Approach #2: Use case when and grouping functions
+select 
+    machine_id,
+    round(
+        SUM(case when activity_type='start' then timestamp*-1 else timestamp end)*1.0
+    /(select count(distinct process_id)),3
+        ) AS processing_time
+from 
+    activity
+group by machine_id
